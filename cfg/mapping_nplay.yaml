@@ -1,0 +1,17 @@
+# NPlay Key mapping
+key_mapping:
+  d:
+    buttons:
+      Y: 0
+      B: 1
+      A: 2
+      X: 3
+      LB: 4
+      RB: 5
+      LT: 7
+      RT: 6
+    axis: 
+      XRJoy: 2
+      YRJoy: 3
+      XLJoy: 0
+      YLJoy: 1

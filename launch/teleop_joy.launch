@@ -1,0 +1,20 @@
+<launch>    
+    <arg name="joy_dev" default="/dev/input/js0" />
+    <arg name="joy_name" default="f710" />
+    <arg name="cmd_vel_topic" default="cmd_vel" />
+    <arg name="use_dynamic_params" default="false" />
+
+    <!-- Load configuration defaults -->
+    <rosparam command="load" file="$(find teleop_joy_pkg)/cfg/mapping_$(arg joy_name).yaml" ns="sewer_teleop_joy" />
+    
+    <!-- Start node that publishes joystick commands to /joy-->
+    <node name="joy_node" pkg="joy" type="joy_node" output="screen">
+        <param name="dev" value="$(arg joy_dev)" />        
+    </node>
+    <!-- Start node that publishes velocity commands to cmd_vel_joy -->
+    <node pkg="teleop_joy_pkg" type="joy_controller.py" name="teleop_joy" output="screen" >
+        <param name="cmd_vel_topic" value="$(arg cmd_vel_topic)" />
+        <param name="use_dynamic_params" value="$(arg use_dynamic_params)" />
+    </node>
+
+</launch>
