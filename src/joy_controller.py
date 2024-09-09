@@ -31,19 +31,16 @@ class Teleop:
                     self.curr_max_vel = 1.0
                     self.curr_max_rot = 1.0
                     self.controller_list = ["Joystick", "Autonomous", "Interface"]
-                    # self.log("Connecting to Motors Dynamic Parameter server", 7)
                     self.dynamic_client = dynamic_reconfigure.client.Client("sewer_motors", timeout=10, config_callback=self.update_params)
                     break
                 except Exception:
                     if tries == 2:
-                        # self.log("No motor dynamic parameter server detected.", 5, alert="warn")
                         self.max_vel = 1.0
                         self.max_rot = 1.0
                         self.curr_max_vel = 1.0
                         self.curr_max_rot = 1.0
                         self.dynamic_client = None
                     else:
-                        # self.log("Waiting for motor dynamic parameter server.", 5, alert="warn")
                         rospy.sleep(2)
         else:
             self.max_vel = 1.0
@@ -70,36 +67,11 @@ class Teleop:
         self.change_max_speed = False
         rospy.Subscriber("joy", Joy, self.update_joy)
 
-        # self.log("Node is initialized", 5)
-
-    #########################
-    #  AUXILIARY FUNCTIONS  #
-    #########################
-    # def log(self, msg, msg_level, log_level=-1, alert="info"):
-    #     """
-    #     Log function that publish in screen and in topic
-    #     :param msg: Message to be published
-    #     :param msg_level: Message level (1-10, where 1 is most important)
-    #     :param log_level: Message level for logging (1-10, optional, -1 uses the same as msg_level)
-    #     :param alert: Alert level of message - "info", "warn" or "error"
-    #     :return:
-    #     """
-    #     if VERBOSE >= msg_level:
-    #         if alert == "info":
-    #             rospy.loginfo("{}: {}".format(rospy.get_name(), msg))
-    #         elif alert == "warn":
-    #             rospy.logwarn("{}: {}".format(rospy.get_name(), msg))
-    #         elif alert == "error":
-    #             rospy.logerr("{}: {}".format(rospy.get_name(), msg))
-    #     if LOGS >= (log_level if log_level != -1 else msg_level):
-    #         self.logging.publish(rospy.Time.now().to_sec(), rospy.get_name(), msg)
-
     ###############
     #  CALLBACKS  #
     ###############
     def update_params(self, config):
         """ Callback to an update in the dynamic parameters of the platform """
-        # self.log("Parameters have been updated", 2)
         self.max_vel = config.max_vel
         self.max_rot = config.max_rot
         self.controller = config.controller
@@ -112,7 +84,6 @@ class Teleop:
             mode = "d"
         else:
             mode = "d"  # This is for the NPlay  remote
-            # self.log("{}: Incorrect joy message type".format(rospy.get_name()), 2, alert="error")
             return
 
         # Translate command to robot velocities - Added a "dead man switch"
@@ -154,7 +125,6 @@ class Teleop:
                 r.sleep()
 
             except (KeyboardInterrupt, rospy.exceptions.ROSInterruptException):
-                # self.log("Node shutting down", 3, alert="warn")
                 break
 
 
