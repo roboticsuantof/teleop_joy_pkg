@@ -6,7 +6,6 @@ import subprocess
 from std_msgs.msg import String, Float64
 from sensor_msgs.msg import Joy
 from geometry_msgs.msg import Twist
-from sewer_msgs.msg import Log
 import dynamic_reconfigure.client
 
 LOGS = 7
@@ -16,39 +15,17 @@ class Teleop:
     """
     Class responsible for interpreting joystick commands
     """
-    def __init__(self, use_dynamic_params=True):
+    def __init__(self):
 
         # Robot parameters
-        self.use_dynamic_params = use_dynamic_params
         self.control_freq = 20
-        self.logging = rospy.Publisher("sewer_logging", Log, queue_size=10)
-        if self.use_dynamic_params:
-            for tries in range(0, 3):
-                try:
-                    # ROS Dynamic Reconfigure
-                    self.max_vel = 0.0
-                    self.max_rot = 0.0
-                    self.curr_max_vel = 1.0
-                    self.curr_max_rot = 1.0
-                    self.controller_list = ["Joystick", "Autonomous", "Interface"]
-                    self.dynamic_client = dynamic_reconfigure.client.Client("sewer_motors", timeout=10, config_callback=self.update_params)
-                    break
-                except Exception:
-                    if tries == 2:
-                        self.max_vel = 1.0
-                        self.max_rot = 1.0
-                        self.curr_max_vel = 1.0
-                        self.curr_max_rot = 1.0
-                        self.dynamic_client = None
-                    else:
-                        rospy.sleep(2)
-        else:
-            self.max_vel = 1.0
-            self.max_rot = 1.0
-            self.curr_max_vel = 1.0
-            self.curr_max_rot = 1.0
-            self.dynamic_client = None
-            self.controller_list = ["Joystick", "Autonomous", "Interface"]
+
+        self.max_vel = 1.0
+        self.max_rot = 1.0
+        self.curr_max_vel = 1.0
+        self.curr_max_rot = 1.0
+        self.dynamic_client = None
+        self.controller_list = ["Joystick", "Autonomous", "Interface"]
 
         # Joystick mapping
         self.change_controller = False
@@ -131,8 +108,8 @@ class Teleop:
 if __name__ == "__main__":
     rospy.init_node("sewer_teleop")
 
-    use_dynamic_params = rospy.get_param("~use_dynamic_params", True)  # Get the flag from a ROS parameter (default: True)
     
-    t = Teleop(use_dynamic_params=use_dynamic_params)
+    t = Teleop()
     t.start()
+
     rospy.loginfo("{}: Shutting down.".format(rospy.get_name()))

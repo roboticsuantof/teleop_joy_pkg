@@ -10,7 +10,6 @@ project(teleop_joy_pkg)
 find_package(catkin REQUIRED COMPONENTS
   joy
   rospy
-  sewer_msgs
 )
 
 ## System dependencies are found with CMake's conventions
